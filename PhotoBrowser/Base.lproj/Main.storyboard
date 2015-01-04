@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="CpL-7C-w39">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+    </dependencies>
+    <scenes>
+        <!--Login-->
+        <scene sceneID="1sw-92-BVW">
+            <objects>
+                <viewController id="Tbf-cJ-MQY" customClass="OauthLoginViewController" customModule="PhotoBrowser" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="AFL-dY-oWo"/>
+                        <viewControllerLayoutGuide type="bottom" id="AAb-z5-7Ou"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Lab-x0-7Ef">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OkH-w8-7ak">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="delegate" destination="Tbf-cJ-MQY" id="S5e-az-fBh"/>
+                                </connections>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="OkH-w8-7ak" firstAttribute="bottom" secondItem="AAb-z5-7Ou" secondAttribute="top" id="TtV-vE-TXa"/>
+                            <constraint firstAttribute="trailing" secondItem="OkH-w8-7ak" secondAttribute="trailing" id="Xu7-zP-jUZ"/>
+                            <constraint firstItem="OkH-w8-7ak" firstAttribute="leading" secondItem="Lab-x0-7Ef" secondAttribute="leading" id="jAp-lY-29u"/>
+                            <constraint firstItem="OkH-w8-7ak" firstAttribute="top" secondItem="Lab-x0-7Ef" secondAttribute="top" id="tb6-PJ-lLW"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Login" id="355-sY-WM6"/>
+                    <connections>
+                        <outlet property="webView" destination="OkH-w8-7ak" id="OGb-0E-3Zx"/>
+                        <segue destination="9oh-Gc-SlO" kind="unwind" identifier="unwindToPhotoBrowser" unwindAction="unwindToPhotoBrowser:" id="gaC-Mh-FT9"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hY4-wS-X4e" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="9oh-Gc-SlO" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="3041" y="952"/>
+        </scene>
+        <!--Gallary-->
+        <scene sceneID="b8T-8R-IEx">
+            <objects>
+                <collectionViewController id="VJc-b2-2WG" customClass="PhotoBrowserCollectionViewController" customModule="PhotoBrowser" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" id="AXU-1S-v8E">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="3Hr-3h-voN">
+                            <size key="itemSize" width="50" height="50"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells/>
+                        <connections>
+                            <outlet property="dataSource" destination="VJc-b2-2WG" id="eYp-oY-pTk"/>
+                            <outlet property="delegate" destination="VJc-b2-2WG" id="UYg-To-Rau"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" title="Gallary" id="dcD-NX-qMV">
+                        <barButtonItem key="rightBarButtonItem" title="Logout" id="Z8A-FX-CkR">
+                            <connections>
+                                <segue destination="98f-j8-8fB" kind="presentation" identifier="login" id="qok-QF-BrT"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="logoutButtonItem" destination="Z8A-FX-CkR" id="msM-YC-4ti"/>
+                        <segue destination="ojc-pM-E8s" kind="show" identifier="show photo" id="owy-S5-itk"/>
+                    </connections>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PZt-6q-EHF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3041" y="246"/>
+        </scene>
+        <!--Photo Viewer View Controller-->
+        <scene sceneID="PgB-vL-I39">
+            <objects>
+                <viewController id="ojc-pM-E8s" customClass="PhotoViewerViewController" customModule="PhotoBrowser" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="mzI-6z-BMo"/>
+                        <viewControllerLayoutGuide type="bottom" id="J8r-i1-6d0"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="EAJ-Bn-4at">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CHe-nP-JsS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3917" y="246"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="GP9-Hy-FHS">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="98f-j8-8fB" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="SVj-gk-jO7">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Tbf-cJ-MQY" kind="relationship" relationship="rootViewController" id="hcV-wk-s8U"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ivb-LM-O9L" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2229" y="989"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="EPq-Jb-Jcg">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="CpL-7C-w39" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="lHD-Ic-DQK">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="VJc-b2-2WG" kind="relationship" relationship="rootViewController" id="eKW-oz-tgS"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8FE-Pp-WaV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2263" y="277"/>
+        </scene>
+    </scenes>
+</document>
