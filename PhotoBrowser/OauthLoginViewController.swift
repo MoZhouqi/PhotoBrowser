@@ -7,9 +7,11 @@
 //
 
 import UIKit
-import Alamofire
 import Foundation
 import CoreData
+import Alamofire
+import SwiftyJSON
+
 class OauthLoginViewController: UIViewController {
     
     @IBOutlet weak var webView: UIWebView!
@@ -38,7 +40,7 @@ class OauthLoginViewController: UIViewController {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "unwindToPhotoBrowser" && segue.destinationViewController.isKindOfClass(PhotoBrowserCollectionViewController.classForCoder()) {
-            let photoBrowserCollectionViewController = segue.destinationViewController as PhotoBrowserCollectionViewController
+            let photoBrowserCollectionViewController = segue.destinationViewController as! PhotoBrowserCollectionViewController
             if let user = sender?.valueForKey("user") as? User {
                 photoBrowserCollectionViewController.user = user
                 
@@ -74,15 +76,12 @@ extension OauthLoginViewController: UIWebViewDelegate {
                     //println(jsonObject)
                     let json = JSON(jsonObject!)
                     
-                    if let accessToken = json["access_token"].string{
-                        if let userID = json["user"]["id"].string {
-                            let user =
-                            NSEntityDescription.insertNewObjectForEntityForName("User", inManagedObjectContext: self.coreDataStack.context) as User
-                            user.userID = userID
-                            user.accessToken = accessToken
-                            self.coreDataStack.saveContext()
-                            self.performSegueWithIdentifier("unwindToPhotoBrowser", sender: ["user": user])
-                        }
+                    if let accessToken = json["access_token"].string, userID = json["user"]["id"].string {
+                        let user = NSEntityDescription.insertNewObjectForEntityForName("User", inManagedObjectContext: self.coreDataStack.context) as! User
+                        user.userID = userID
+                        user.accessToken = accessToken
+                        self.coreDataStack.saveContext()
+                        self.performSegueWithIdentifier("unwindToPhotoBrowser", sender: ["user": user])
                     }
                 }
                 

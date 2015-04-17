@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 import Alamofire
+import FastImageCache
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, FICImageCacheDelegate {
@@ -20,8 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FICImageCacheDelegate {
         // Override point for customization after application launch.
         
         FastImageCacheHelper.setUp(self)
-        let navController = window!.rootViewController as UINavigationController
-        let photoBrowserCollectionViewController = navController.topViewController as PhotoBrowserCollectionViewController
+        let navController = window!.rootViewController as! UINavigationController
+        let photoBrowserCollectionViewController = navController.topViewController as! PhotoBrowserCollectionViewController
         photoBrowserCollectionViewController.coreDataStack = coreDataStack
         
         return true
@@ -54,20 +55,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FICImageCacheDelegate {
     
     //MARK: FICImageCacheDelegate
     
-    func imageCache(imageCache: FICImageCache!, wantsSourceImageForEntity entity: PhotoInfo!, withFormatName formatName: String!, completionBlock: FICImageRequestCompletionBlock!) {
-        let imageURL = entity.sourceImageURLWithFormatName(formatName)
-        let request = NSURLRequest(URL: imageURL)
-        
-        entity.request = Alamofire.request(.GET, request).validate(contentType: ["image/*"]).responseImage() {
-            (_, _, image, error) in
-            if (error == nil) {
-                completionBlock(image)
+    func imageCache(imageCache: FICImageCache!, wantsSourceImageForEntity entity: FICEntity!, withFormatName formatName: String!, completionBlock: FICImageRequestCompletionBlock!) {
+        if let entity = entity as? PhotoInfo {
+            let imageURL = entity.sourceImageURLWithFormatName(formatName)
+            let request = NSURLRequest(URL: imageURL)
+            
+            entity.request = Alamofire.request(.GET, request).validate(contentType: ["image/*"]).responseImage() {
+                (_, _, image, error) in
+                if (error == nil) {
+                    completionBlock(image)
+                }
             }
         }
     }
     
-    func imageCache(imageCache: FICImageCache!, cancelImageLoadingForEntity entity: PhotoInfo!, withFormatName formatName: String!) {
-        if let request = entity.request {
+    func imageCache(imageCache: FICImageCache!, cancelImageLoadingForEntity entity: FICEntity!, withFormatName formatName: String!) {
+        
+        if let entity = entity as? PhotoInfo, request = entity.request {
             request.cancel()
             entity.request = nil
             //println("be canceled:\(entity.UUID)")

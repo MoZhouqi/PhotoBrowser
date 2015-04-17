@@ -8,8 +8,10 @@
 
 import UIKit
 import Foundation
-import Alamofire
 import CoreData
+import Alamofire
+import FastImageCache
+import SwiftyJSON
 
 class PhotoBrowserCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
@@ -48,7 +50,7 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
         var error: NSError?
         if let fetchRequest = coreDataStack.model.fetchRequestTemplateForName("UserFetchRequest") {
             
-            let results = coreDataStack.context.executeFetchRequest(fetchRequest,error: &error) as [User]
+            let results = coreDataStack.context.executeFetchRequest(fetchRequest,error: &error) as! [User]
             user = results.first
         }
         
@@ -78,7 +80,7 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(PhotoBrowserCellIdentifier, forIndexPath: indexPath) as PhotoBrowserCollectionViewCell
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(PhotoBrowserCellIdentifier, forIndexPath: indexPath) as! PhotoBrowserCollectionViewCell
         let sharedImageCache = FICImageCache.sharedImageCache()
         cell.imageView.image = nil
         
@@ -92,7 +94,7 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
         
         sharedImageCache.retrieveImageForEntity(photo, withFormatName: formatName, completionBlock: {
             (photoInfo, _, image) -> Void in
-            if (photoInfo as PhotoInfo) == cell.photoInfo {
+            if (photoInfo as! PhotoInfo) == cell.photoInfo {
                 cell.imageView.image = image
             }
         })
@@ -101,7 +103,7 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
     }
     
     override func collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionReusableView {
-        let footerView = collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: PhotoBrowserFooterViewIdentifier, forIndexPath: indexPath) as PhotoBrowserLoadingCollectionView
+        let footerView = collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: PhotoBrowserFooterViewIdentifier, forIndexPath: indexPath) as! PhotoBrowserLoadingCollectionView
         if nextURLRequest == nil {
             footerView.spinner.stopAnimating()
         } else {
@@ -155,7 +157,7 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
             (_ , _, jsonObject, error) in
             
             if (error == nil) {
-                //  println(jsonObject)
+                //println(jsonObject)
                 let json = JSON(jsonObject!)
                 
                 if (json["meta"]["code"].intValue  == 200) {
@@ -215,10 +217,10 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
     }
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "show photo" && segue.destinationViewController.isKindOfClass(PhotoViewerViewController.classForCoder()) {
-            let photoViewerViewController = segue.destinationViewController as PhotoViewerViewController
+            let photoViewerViewController = segue.destinationViewController as! PhotoViewerViewController
             photoViewerViewController.photoInfo = sender?.valueForKey("photoInfo") as? PhotoInfo
         } else if segue.identifier == "login" && segue.destinationViewController.isKindOfClass(UINavigationController.classForCoder()) {
-            let navigationController = segue.destinationViewController as UINavigationController
+            let navigationController = segue.destinationViewController as! UINavigationController
             if let oauthLoginViewController = navigationController.topViewController as? OauthLoginViewController {
                 oauthLoginViewController.coreDataStack = coreDataStack
             }

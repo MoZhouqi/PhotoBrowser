@@ -8,6 +8,7 @@
 
 import Foundation
 import Alamofire
+import FastImageCache
 
 class PhotoInfo: NSObject, FICEntity {
     var UUID: String {
@@ -29,7 +30,7 @@ class PhotoInfo: NSObject, FICEntity {
     }
 
     override func isEqual(object: AnyObject?) -> Bool {
-        return (object as PhotoInfo).UUID == self.UUID
+        return (object as! PhotoInfo).UUID == self.UUID
     }
     
     func sourceImageURLWithFormatName(formatName: String!) -> NSURL! {

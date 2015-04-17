@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FastImageCache
 
 class PhotoViewerViewController: UIViewController, UIScrollViewDelegate {
     
@@ -72,7 +73,7 @@ class PhotoViewerViewController: UIViewController, UIScrollViewDelegate {
     
     // MARK: ScrollView
     
-    func scrollViewDidZoom(scrollView: UIScrollView!) {
+    func scrollViewDidZoom(scrollView: UIScrollView) {
         self.centerScrollViewContents()
     }
     
@@ -95,7 +96,7 @@ class PhotoViewerViewController: UIViewController, UIScrollViewDelegate {
         self.imageView.frame = contentsFrame
     }
     
-    func viewForZoomingInScrollView(scrollView: UIScrollView!) -> UIView! {
+    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
         return self.imageView
     }
     

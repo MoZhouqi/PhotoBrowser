@@ -1,0 +1,16 @@
+PODS:
+  - Alamofire (1.2.0)
+  - FastImageCache (1.3)
+  - SwiftyJSON (2.2.0)
+
+DEPENDENCIES:
+  - Alamofire (~> 1.2)
+  - FastImageCache (~> 1.3)
+  - SwiftyJSON (~> 2.2.0)
+
+SPEC CHECKSUMS:
+  Alamofire: d765c5c1713aa64106b0228aaa600a1e6851f68d
+  FastImageCache: 25f214fd46405daca3d1995d783fb83b9036c62e
+  SwiftyJSON: 0b3e6c07af17ff745e77e8e9984097b55c956e5c
+
+COCOAPODS: 0.36.4

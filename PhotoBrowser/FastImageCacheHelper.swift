@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import FastImageCache
 
 let KMPhotoImageFormatFamily = "KMPhotoImageFormatFamily"
 let KMSmallImageFormatName = "KMSmallImageFormatName"
