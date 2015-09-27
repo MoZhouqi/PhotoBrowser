@@ -46,8 +46,7 @@ class PhotoViewerViewController: UIViewController, UIScrollViewDelegate {
         self.imageView.frame = CGRectMake(0, scrollView.frame.size.height/2 - width/2, width, width)
         
         let sharedImageCache = FICImageCache.sharedImageCache()
-        var photo: UIImage?
-        let exists = sharedImageCache.retrieveImageForEntity(photoInfo, withFormatName: KMBigImageFormatName, completionBlock: {
+        sharedImageCache.retrieveImageForEntity(photoInfo, withFormatName: KMBigImageFormatName, completionBlock: {
             (photoInfo, _, image) -> Void in
             self.imageView.image = image
             self.spinner.stopAnimating()

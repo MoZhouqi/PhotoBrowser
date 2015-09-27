@@ -61,9 +61,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FICImageCacheDelegate {
             let request = NSURLRequest(URL: imageURL)
             
             entity.request = Alamofire.request(.GET, request).validate(contentType: ["image/*"]).responseImage() {
-                (_, _, image, error) in
-                if (error == nil) {
+                (_, _, result) in
+                switch result {
+                case .Success(let image):
                     completionBlock(image)
+                case .Failure:
+                    break;
                 }
             }
         }
@@ -74,7 +77,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FICImageCacheDelegate {
         if let entity = entity as? PhotoInfo, request = entity.request {
             request.cancel()
             entity.request = nil
-            //println("be canceled:\(entity.UUID)")
+            //debugPrint("be canceled:\(entity.UUID)")
         }
     }
     
@@ -83,7 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, FICImageCacheDelegate {
     }
     
     func imageCache(imageCache: FICImageCache!, errorDidOccurWithMessage errorMessage: String!) {
-        println("errorMessage" + errorMessage)
+        debugPrint("errorMessage" + errorMessage)
     }
 }
 

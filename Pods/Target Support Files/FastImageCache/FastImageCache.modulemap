@@ -1,5 +1,5 @@
 framework module FastImageCache {
-  umbrella header "Pods-FastImageCache-umbrella.h"
+  umbrella header "FastImageCache-umbrella.h"
 
   export *
   module * { export * }

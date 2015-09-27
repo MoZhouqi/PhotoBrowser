@@ -47,10 +47,9 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
         super.viewDidLoad()
         setupView()
         
-        var error: NSError?
         if let fetchRequest = coreDataStack.model.fetchRequestTemplateForName("UserFetchRequest") {
             
-            let results = coreDataStack.context.executeFetchRequest(fetchRequest,error: &error) as! [User]
+            let results = try! coreDataStack.context.executeFetchRequest(fetchRequest) as! [User]
             user = results.first
         }
         
@@ -145,7 +144,7 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
         }
     }
     
-    func populatePhotos(request:URLRequestConvertible) {
+    func populatePhotos(request: URLRequestConvertible) {
         
         if populatingPhotos {
             return
@@ -154,11 +153,14 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
         populatingPhotos = true
         
         Alamofire.request(request).responseJSON() {
-            (_ , _, jsonObject, error) in
-            
-            if (error == nil) {
-                //println(jsonObject)
-                let json = JSON(jsonObject!)
+            (_ , _, result) in
+            defer {
+                self.populatingPhotos = false
+            }
+            switch result {
+            case .Success(let jsonObject):
+                //debugPrint(jsonObject)
+                let json = JSON(jsonObject)
                 
                 if (json["meta"]["code"].intValue  == 200) {
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)) {
@@ -176,7 +178,7 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
                             })
                         
                         let lastItem = self.photos.count
-                        self.photos.extend(photoInfos)
+                        self.photos.appendContentsOf(photoInfos)
                         
                         let indexPaths = (lastItem..<self.photos.count).map { NSIndexPath(forItem: $0, inSection: 0) }
                         
@@ -187,9 +189,9 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
                     }
                     
                 }
-                
+            case .Failure:
+                break;
             }
-            self.populatingPhotos = false
             
         }
     }
@@ -201,8 +203,8 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
         self.collectionView!.reloadData()
         refreshControl.endRefreshing()
         if user != nil {
-            let urlString = Instagram.Router.PopularPhotos(user!.userID, user!.accessToken)
-            populatePhotos(urlString)
+            let request = Instagram.Router.PopularPhotos(user!.userID, user!.accessToken)
+            populatePhotos(request)
         }
     }
     
@@ -215,6 +217,7 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
             logoutButtonItem.enabled = true
         }
     }
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "show photo" && segue.destinationViewController.isKindOfClass(PhotoViewerViewController.classForCoder()) {
             let photoViewerViewController = segue.destinationViewController as! PhotoViewerViewController
@@ -238,7 +241,7 @@ class PhotoBrowserCollectionViewCell: UICollectionViewCell {
     var photoInfo: PhotoInfo?
     
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -255,7 +258,7 @@ class PhotoBrowserCollectionViewCell: UICollectionViewCell {
 class PhotoBrowserLoadingCollectionView: UICollectionReusableView {
     let spinner = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.WhiteLarge)
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     

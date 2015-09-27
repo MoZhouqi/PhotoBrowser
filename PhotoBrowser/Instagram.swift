@@ -27,8 +27,10 @@ struct Instagram {
             return (urlString, params)
         }
         
-        var URLRequest: NSURLRequest {
-            let (path: String, parameters: [String: AnyObject]) = {
+        // MARK: URLRequestConvertible
+        
+        var URLRequest: NSMutableURLRequest {
+            let result: (path: String, parameters: [String: AnyObject]?) = {
                 switch self {
                 case .PopularPhotos (let userID, let accessToken):
                     let params = ["access_token": accessToken]
@@ -41,32 +43,39 @@ struct Instagram {
                 }
                 }()
             
-            let BaeseURL = NSURL(string: Router.baseURLString)
-            var URLRequest = NSURLRequest(URL: BaeseURL!.URLByAppendingPathComponent(path))
+            let BaeseURL = NSURL(string: Router.baseURLString)!
+            let URLRequest = NSURLRequest(URL: BaeseURL.URLByAppendingPathComponent(result.path))
             let encoding = Alamofire.ParameterEncoding.URL
-            return encoding.encode(URLRequest, parameters: parameters).0
+            return encoding.encode(URLRequest, parameters: result.parameters).0
         }
     }
     
 }
 
 extension Alamofire.Request {
-    class func imageResponseSerializer() -> Serializer {
-        return { request, response, data in
-            if data == nil {
-                return (nil, nil)
+    class func imageResponseSerializer() -> GenericResponseSerializer<UIImage> {
+        return GenericResponseSerializer { request, response, data in
+            guard let validData = data where validData.length > 0 else {
+                return .Failure(data, Request.imageDataError())
             }
             
-            let image = UIImage(data: data!, scale: UIScreen.mainScreen().scale)
+            if let image = UIImage(data: validData, scale: UIScreen.mainScreen().scale) {
+                return Result<UIImage>.Success(image)
+            }
+            else {
+                return .Failure(data, Request.imageDataError())
+            }
             
-            return (image, nil)
         }
     }
     
-    func responseImage(completionHandler: (NSURLRequest, NSHTTPURLResponse?, UIImage?, NSError?) -> Void) -> Self {
-        return response(serializer: Request.imageResponseSerializer(), completionHandler: { (request, response, image, error) in
-            completionHandler(request, response, image as? UIImage, error)
-        })
+    func responseImage(completionHandler: (NSURLRequest?, NSHTTPURLResponse?, Result<UIImage>) -> Void) -> Self {
+        return response(responseSerializer: Request.imageResponseSerializer(), completionHandler: completionHandler)
+    }
+    
+    private class func imageDataError() -> NSError {
+        let failureReason = "Failed to create a valid Image from the response data"
+        return Error.errorWithCode(NSURLErrorCannotDecodeContentData, failureReason: failureReason)
     }
 }
 

@@ -24,7 +24,7 @@ class OauthLoginViewController: UIViewController {
         super.viewWillAppear(animated)
         webView.hidden = true
         NSURLCache.sharedURLCache().removeAllCachedResponses()
-        if let cookies = NSHTTPCookieStorage.sharedHTTPCookieStorage().cookies as? [NSHTTPCookie] {
+        if let cookies = NSHTTPCookieStorage.sharedHTTPCookieStorage().cookies {
             for cookie in cookies {
                 NSHTTPCookieStorage.sharedHTTPCookieStorage().deleteCookie(cookie)
             }
@@ -52,13 +52,13 @@ class OauthLoginViewController: UIViewController {
 
 extension OauthLoginViewController: UIWebViewDelegate {
     func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
-        println(request.URLString)
+        debugPrint(request.URLString)
         let urlString = request.URLString
         if let range = urlString.rangeOfString(Instagram.Router.redirectURI + "?code=") {
             
             let location = range.endIndex
             let code = urlString.substringFromIndex(location)
-            println(code)
+            debugPrint(code)
             requestAccessToken(code)
             return false
         }
@@ -70,11 +70,11 @@ extension OauthLoginViewController: UIWebViewDelegate {
         
         Alamofire.request(.POST, request.URLString, parameters: request.Params)
             .responseJSON {
-                (_, _, jsonObject, error) in
-                
-                if (error == nil) {
-                    //println(jsonObject)
-                    let json = JSON(jsonObject!)
+                (_, _, result) in
+                switch result {
+                case .Success(let jsonObject):
+                    //debugPrint(jsonObject)
+                    let json = JSON(jsonObject)
                     
                     if let accessToken = json["access_token"].string, userID = json["user"]["id"].string {
                         let user = NSEntityDescription.insertNewObjectForEntityForName("User", inManagedObjectContext: self.coreDataStack.context) as! User
@@ -83,15 +83,17 @@ extension OauthLoginViewController: UIWebViewDelegate {
                         self.coreDataStack.saveContext()
                         self.performSegueWithIdentifier("unwindToPhotoBrowser", sender: ["user": user])
                     }
+                case .Failure:
+                    break;
                 }
-                
         }
     }
+    
     func webViewDidFinishLoad(webView: UIWebView) {
         webView.hidden = false
     }
     
-    func webView(webView: UIWebView, didFailLoadWithError error: NSError) {
+    func webView(webView: UIWebView, didFailLoadWithError error: NSError?) {
         
     }
 }

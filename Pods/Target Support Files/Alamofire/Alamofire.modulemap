@@ -1,5 +1,5 @@
 framework module Alamofire {
-  umbrella header "Pods-Alamofire-umbrella.h"
+  umbrella header "Alamofire-umbrella.h"
 
   export *
   module * { export * }
