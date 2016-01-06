@@ -118,7 +118,8 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
     
     func setupCollectionViewLayout() {
         let layout = UICollectionViewFlowLayout()
-        let itemWidth = (view.bounds.size.width - 2) / 3
+        let column = UI_USER_INTERFACE_IDIOM() == .Pad ? 4 : 3
+        let itemWidth = floor((view.bounds.size.width - CGFloat(column - 1)) / CGFloat(column))
         layout.itemSize = CGSize(width: itemWidth, height: itemWidth)
         layout.minimumInteritemSpacing = 1.0
         layout.minimumLineSpacing = 1.0
