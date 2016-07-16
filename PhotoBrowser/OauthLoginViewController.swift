@@ -53,14 +53,15 @@ class OauthLoginViewController: UIViewController {
 extension OauthLoginViewController: UIWebViewDelegate {
     func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         debugPrint(request.URLString)
-        let urlString = request.URLString
-        if let range = urlString.rangeOfString(Instagram.Router.redirectURI + "?code=") {
-            
-            let location = range.endIndex
-            let code = urlString.substringFromIndex(location)
-            debugPrint(code)
-            requestAccessToken(code)
-            return false
+        
+        let redirectURIComponents = NSURLComponents(string: Instagram.Router.redirectURI)!
+        let components = NSURLComponents(string: request.URLString)!
+        if components.host == redirectURIComponents.host {
+            if let code = (components.queryItems?.filter { $0.name == "code" })?.first?.value {
+                debugPrint(code)
+                requestAccessToken(code)
+                return false
+            }
         }
         return true
     }
