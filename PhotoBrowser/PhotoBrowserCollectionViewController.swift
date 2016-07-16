@@ -133,7 +133,7 @@ class PhotoBrowserCollectionViewController: UICollectionViewController, UICollec
         collectionView!.registerClass(PhotoBrowserLoadingCollectionView.classForCoder(), forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, withReuseIdentifier: PhotoBrowserFooterViewIdentifier)
         
         refreshControl.tintColor = UIColor.whiteColor()
-        refreshControl.addTarget(self, action: "handleRefresh", forControlEvents: .ValueChanged)
+        refreshControl.addTarget(self, action: #selector(handleRefresh), forControlEvents: .ValueChanged)
         collectionView!.addSubview(refreshControl)
     }
     

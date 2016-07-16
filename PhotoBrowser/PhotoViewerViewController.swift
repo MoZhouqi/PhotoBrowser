@@ -52,7 +52,7 @@ class PhotoViewerViewController: UIViewController, UIScrollViewDelegate {
             self.spinner.stopAnimating()
         })
         
-        let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: "handleDoubleTap:")
+        let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTap(_:)))
         doubleTapRecognizer.numberOfTapsRequired = 2
         doubleTapRecognizer.numberOfTouchesRequired = 1
         scrollView.addGestureRecognizer(doubleTapRecognizer)
