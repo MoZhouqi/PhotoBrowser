@@ -43,8 +43,8 @@ struct Instagram {
                 }
                 }()
             
-            let BaeseURL = NSURL(string: Router.baseURLString)!
-            let URLRequest = NSURLRequest(URL: BaeseURL.URLByAppendingPathComponent(result.path))
+            let baseURL = NSURL(string: Router.baseURLString)!
+            let URLRequest = NSURLRequest(URL: NSURL(string: result.path ,relativeToURL:baseURL)!)
             let encoding = Alamofire.ParameterEncoding.URL
             return encoding.encode(URLRequest, parameters: result.parameters).0
         }
