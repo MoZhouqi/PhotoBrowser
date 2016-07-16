@@ -54,7 +54,7 @@ extension OauthLoginViewController: UIWebViewDelegate {
     func webView(webView: UIWebView, shouldStartLoadWithRequest request: NSURLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         debugPrint(request.URLString)
         let urlString = request.URLString
-        if let range = urlString.rangeOfString(Instagram.Router.redirectURI + "?code=") {
+        if let range = urlString.rangeOfString(Instagram.Router.redirectURI + "/?code=") {
             
             let location = range.endIndex
             let code = urlString.substringFromIndex(location)
